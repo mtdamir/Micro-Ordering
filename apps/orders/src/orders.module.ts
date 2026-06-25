@@ -6,12 +6,14 @@ import {DatabaseModule} from '@app/common'
 import * as Joi from 'joi'
 import { MongooseModule } from '@nestjs/mongoose';
 import {Order,OrderSchema} from './schema/order.schema'
+import { OrderRepository } from './order.repository';
 
 @Module({
   imports: [ConfigModule.forRoot({
     isGlobal:true,
     validationSchema: Joi.object({
       MONGO_URI: Joi.string().required(),
+      PORT: Joi.number().required()
     }),
     envFilePath: './apps/orders/.env',
   }),
@@ -19,6 +21,6 @@ import {Order,OrderSchema} from './schema/order.schema'
   MongooseModule.forFeature([{name:Order.name,schema:OrderSchema}])
 ],
   controllers: [OrdersController],
-  providers: [OrdersService],
+  providers: [OrdersService, OrderRepository],
 })
 export class OrdersModule {}
