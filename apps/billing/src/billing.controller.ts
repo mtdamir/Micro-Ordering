@@ -11,7 +11,6 @@ export class BillingController {
   ) {}
 
   @EventPattern("order_created")
-  @UseGuards(JwtAuthGuard)
   async handleOrderCreated(@Payload() data:any, @Ctx() context: RmqContext){
     this.billingService.bill(data)
     this.rmqService.ack(context)
