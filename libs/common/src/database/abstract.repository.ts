@@ -44,7 +44,7 @@ export abstract class AbstractRepository<TDocument extends AbstractDocument>{
     async findOneAndUpdate(filter: QueryFilter<TDocument>, update: UpdateQuery<TDocument>){
         const document = await this.model.findOneAndUpdate(filter, update, {
             lean: true,
-            new: true,
+            returnDocument: 'after',
         });
 
         if (!document) {
@@ -61,7 +61,7 @@ export abstract class AbstractRepository<TDocument extends AbstractDocument>{
         return this.model.findOneAndUpdate(filter, document, {
             lean: true,
             upsert: true,
-            new: true,
+            returnDocument: 'after'
         });
     }
 

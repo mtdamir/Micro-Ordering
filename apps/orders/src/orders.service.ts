@@ -7,6 +7,7 @@ import { lastValueFrom } from 'rxjs';
 import { InjectModel } from '@nestjs/mongoose';
 import { OutboxEvent, OutboxStatus } from './schema/outbox.schema';
 import { Model } from 'mongoose';
+import { IdempotencyRecord } from './schema/idempotency.schema';
 
 @Injectable()
 export class OrdersService {
@@ -15,9 +16,12 @@ export class OrdersService {
 
     @InjectModel(OutboxEvent.name)
     private outboxModel: Model<OutboxEvent>,
+
+     @InjectModel(IdempotencyRecord.name)
+    private  idempotencyModel: Model<IdempotencyRecord>
   ) {}
 
-  async createOrder(request: CreateOrderRequest, userId: string) {
+  async createOrder(request: CreateOrderRequest, userId: string, idempotencyKey?: string) {
     const session = await this.orderRepo.startTransaction();
 
     try {
@@ -39,6 +43,13 @@ export class OrdersService {
         ],
         { session },
       );
+
+      if (idempotencyKey) {
+        await this.idempotencyModel.create(
+          [{ idempotencyKey, userId, responseBody: order }],
+          { session },
+        );
+      }
 
       await session.commitTransaction();
       return order;

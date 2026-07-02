@@ -11,6 +11,7 @@ import { BILING_SERVICE } from './constants/servises';
 import { OutboxEvent, OutboxEventSchema } from './schema/outbox.schema';
 import{ScheduleModule } from '@nestjs/schedule'
 import { OutboxPublisherService } from './outbox-publisher.service';
+import { IdempotencyRecord, IdempotencyRecordSchema } from './schema/idempotency.schema';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { OutboxPublisherService } from './outbox-publisher.service';
     MongooseModule.forFeature([
       { name: Order.name, schema: OrderSchema },
       { name: OutboxEvent.name, schema: OutboxEventSchema },
+      { name: IdempotencyRecord.name, schema: IdempotencyRecordSchema }
     ]),
 
     RmqModule.register({

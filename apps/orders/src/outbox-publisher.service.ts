@@ -33,8 +33,8 @@ export class OutboxPublisherService {
         },
       },
       {
-        $sort: { createdAt: 1 },
-        new: true,
+        sort: { createdAt: 1 },
+        returnDocument: 'after',
       },
     );
 
